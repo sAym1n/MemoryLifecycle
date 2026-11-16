@@ -3,11 +3,11 @@ using MemoryLifecycle.Gc;
 
 if (args.Length == 0)
 {
-    Console.WriteLine("Укажите команду: gc-pressure | gc-modes | resources | all");
+    Console.WriteLine("Укажите команду: gc-pressure | gc-modes | resources | dispose | all");
     return;
 }
 
-switch (args[0].ToLowerInvariant())
+switch (args.AsSpan()[0].ToLowerInvariant())
 {
     case "gc-pressure":
         PressureScenarios.RunAll();
@@ -21,16 +21,22 @@ switch (args[0].ToLowerInvariant())
         RunResources();
         break;
 
+    case "dispose":
+        await DisposeDemos.RunAllAsync();
+        break;
+
     case "all":
         PressureScenarios.RunAll();
         Console.WriteLine();
         GcModeScenarios.RunParallelAllocation();
         Console.WriteLine();
         RunResources();
+        Console.WriteLine();
+        await DisposeDemos.RunAllAsync();
         break;
 
     default:
-        Console.WriteLine($"Неизвестная команда: {args[0]}");
+        Console.WriteLine($"Неизвестная команда: {args.AsSpan()[0]}");
         break;
 }
 
